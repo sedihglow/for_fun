@@ -1,0 +1,11 @@
+- Make submodule repos in case i make adjustments to errhandle and convnum and
+  utility.h/.c
+  - Comb through the two repos and adjust syntax formating to match up with this
+    repo
+
+- Adjust makefile post adding submodules
+
+- adjust vimrc to identify when a header is holding C programming stuff
+  - OR make the default tab 8, probably do this for .h files for the time being
+
+- Fill out utility.h and utility.c functionalities.

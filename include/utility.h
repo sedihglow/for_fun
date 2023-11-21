@@ -9,7 +9,6 @@
 #ifndef _UTL_SYS_H_
 #define _UTL_SYS_H_
 
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/time.h>
@@ -58,9 +57,10 @@
 
 #define RW_END 0
 
+#define BYTE 1
+
 #define P_RD 0 // value for a pipe read fd in pipefd[2]
 #define P_WR 1 // value for a pip write fd in pipefd[2]
-
 
 /* GNU compiler native to hint for branch prediction in user space */
 #define _usrlikely(x)      __builtin_expect((x), 1)
@@ -76,7 +76,15 @@
 	dest = CALLOC_ARRAY(char, len);                                        \
 	if (_usrlikely(dest))						       \
 		memcpy(dest, src, len);					       \
+	/* TODO: errhandle if memcpy or calloc fails */
 } /* end my_strdup */
+
+
+/*******************************************************************************
+ *
+ * stdin buffer handling with read() system calls
+ *
+ ******************************************************************************/
 
 /*******************************************************************************
  * buff is set to '\0' for nByte before read occures.
@@ -133,13 +141,6 @@
 	} /* end for */                                                        \
 	resStr[_TM_] = '\0';                                                   \
 } /* end PARSE_BUFF */
-
-/* Clears STDIN using read() */
-#define RD_CLR_STDIN() {                                                       \
-	char __ch = {'\0'};                                                    \
-	while (read(STDIN_FILENO, (void*)&__ch, 1) &&			       \
-				  __ch != '\n' && __ch != EOF);		       \
-} /* end RD_CLR_STDIN */
 
 /*******************************************************************************
  * TODO: Adjust this macro or make an alternate that can call a function with
@@ -201,17 +202,25 @@
 	}                                                                      \
 } /* end TIMESPEC_SUB */
 
-static inline void newline_clear(void)
-{
-	int i;
-	for (i=0; i < 10; ++i) {
-		printf("\n\n\n\n\n\n\n\n\n\n");
-	}
-	fflush(stdout);
-} /* end display_clear */
+
+struct input_buff {
+	char *buff;
+	size_t len
+};
 
 /* Function prototypes */
-void compare_limits(unsigned long long tocmp);
+
+/*
+ * Use fgets to get a line from a stdin or a file.
+ *
+ *
+ * returns - resulting array from fgets without the newline.
+ */
+char* fgets_input(FILE *fptr, int inlen);
+
+void rd_clr_stdin();
+
+void compare_int_limits(unsigned long long tocmp);
 void compare_dbl_limits(double tocmp);
 
 #endif

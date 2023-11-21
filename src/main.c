@@ -15,10 +15,6 @@ int main(int argc, char *argv[])
 	/* getopt_long stores the option index here. */
 	int option_index = 0;
 
-	compare_limits(_NANO_1SEC);
-	compare_dbl_limits(DBL_MAX);
-	exit(EXIT_SUCCESS);
-
 	while (true) {
 		static struct option long_options[] = {
 			/* These options set a flag. */
@@ -81,7 +77,7 @@ int main(int argc, char *argv[])
 	   and ‘--brief’ as they are encountered,
 	   we report the final status resulting from them. */
 	if (verbose_flag)
-		puts ("verbose flag is set");
+		puts("verbose flag is set");
 
 	/* Print any remaining command line arguments (not options). */
 	if (optind < argc) {
@@ -90,7 +86,6 @@ int main(int argc, char *argv[])
 			printf("%s ", argv[optind++]);
 		putchar('\n');
 	}
-
 
 
 	exit(EXIT_SUCCESS);
