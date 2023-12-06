@@ -7,7 +7,7 @@
 #include "convNum.h"
 
 /* Flag set by ‘--verbose’. */
-static bool verbose_flag;
+static bool verbose_flag = false;
 
 int main(int argc, char *argv[])
 {

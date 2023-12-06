@@ -42,16 +42,6 @@
 #define NDEBUG 1
 #include <assert.h>
 
-#define UTIL_CONV 0 /* Disable adding convnum for now */
-#ifndef UTIL_CONV
-	#include "convNum.h"       /* str to int functions */
-#endif
-
-#define UTIL_CONV 0 /* Disable adding errhandle for now */
-#ifndef UTIL_CONV
-	#include "err_handle.h" /* general error printing */
-#endif
-
 #define SUCCESS 0
 #define FAILURE -1
 
@@ -76,7 +66,7 @@
 	dest = CALLOC_ARRAY(char, len);                                        \
 	if (_usrlikely(dest))						       \
 		memcpy(dest, src, len);					       \
-	/* TODO: errhandle if memcpy or calloc fails */
+	/* TODO: errhandle if memcpy or calloc fails */			       \
 } /* end my_strdup */
 
 
@@ -204,19 +194,21 @@
 
 
 /* clears STDIN using getchar() */
-#define CLR_STDIN() ({														   \
+#define CLR_STDIN() {														   \
 	char _ch = '\0';														   \
 	while ((_ch = getchar()) && (_ch != '\n' && _ch != EOF));				   \
-})
-
+}
 
 /* input buffer for a dynamically allocated string and its length */
 struct input_buff {
 	char *inbuff;
-	size_t len
+	size_t len;
 };
 
-/* Function prototypes */
+		/* Function prototypes */
+
+/* initialize and fill and input_buff struct */
+struct input_buff *init_input_buff(char *buff, size_t len);
 
 /*
  * Use fgets to get a line from a stdin or a file.
@@ -224,9 +216,7 @@ struct input_buff {
  *
  * returns - resulting array from fgets without the newline.
  */
-char* fgets_input(FILE *fptr, int inlen);
-
-void rd_clr_stdin();
+struct input_buff *fgets_input(FILE *fptr);
 
 void compare_int_limits(unsigned long long tocmp);
 void compare_dbl_limits(double tocmp);

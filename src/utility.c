@@ -1,4 +1,5 @@
 #include "utility.h"
+#include "err_handle.h"
 
 
 #define INBUFF_LEN 512
@@ -8,29 +9,29 @@
  * If char *buff is NULL then only len is filled into the buffer and the
  * input buffers char* is allocated to length bytes
  */
-struct *input_buff init_input_buff(char *buff, size_t len)
+struct input_buff *init_input_buff(char *buff, size_t len)
 {
-	struct *input_buff = CALLOC(struct input_buff);
+	struct input_buff *input = CALLOC(struct input_buff);
 	if (errno)
 		errExit("Failed to calloc input_buffer");
 
-	input_buff->len = len;
+	input->len = len;
 
-	input_buff->inbuff = CALLOC_ARRAY(char, len);
+	input->inbuff = CALLOC_ARRAY(char, len);
 
 	if (buff != NULL)
-		strncpy(input_buff->inbuff, buff, len);
+		strncpy(input->inbuff, buff, len);
 
-	return input_buff;
+	return input;
 }
 
-struct *input_buff fgets_input(FILE *fptr)
+struct input_buff *fgets_input(FILE *fptr)
 {
 	char inbuff[INBUFF_LEN] = {'\0'};
 	size_t len = 0;
 
 	/* get user input and remove the newline */
-	fgets(inbuff, INBUFF_LEN, fptr)
+	fgets(inbuff, INBUFF_LEN, fptr);
 	len = strlen(inbuff) - 1;
 	if (inbuff[len] == '\n') {
 		inbuff[len] = '\0';
@@ -39,7 +40,6 @@ struct *input_buff fgets_input(FILE *fptr)
 	}
 
 	/* fill an input buffer to return */
-
 	return init_input_buff(inbuff, len + 1);
 }
 
