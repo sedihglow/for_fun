@@ -1,27 +1,46 @@
 #include "utility.h"
 
 
-
-
-
+#define INBUFF_LEN 512
 
 /*
- * stdin/file buff functionality using string.h
+ * fill an input buff struct with the characters in the char *buff.
+ * If char *buff is NULL then only len is filled into the buffer and the
+ * input buffers char* is allocated to length bytes
  */
-
-
-char* fgets_input(FILE *fptr)
+struct *input_buff init_input_buff(char *buff, size_t len)
 {
-#define INBUFF_LEN 512
-	char inbuff[INBUFF_LEN] = {'\0'};
+	struct *input_buff = CALLOC(struct input_buff);
+	if (errno)
+		errExit("Failed to calloc input_buffer");
 
-	return;
+	input_buff->len = len;
+
+	input_buff->inbuff = CALLOC_ARRAY(char, len);
+
+	if (buff != NULL)
+		strncpy(input_buff->inbuff, buff, len);
+
+	return input_buff;
 }
 
+struct *input_buff fgets_input(FILE *fptr)
+{
+	char inbuff[INBUFF_LEN] = {'\0'};
+	size_t len = 0;
 
-void clr_stdin() {
-	char ch = '\0';
-	while ((ch = getchar()) && (ch != '\n' && ch != EOF));
+	/* get user input and remove the newline */
+	fgets(inbuff, INBUFF_LEN, fptr)
+	len = strlen(inbuff) - 1;
+	if (inbuff[len] == '\n') {
+		inbuff[len] = '\0';
+	} else {
+		CLR_STDIN()
+	}
+
+	/* fill an input buffer to return */
+
+	return init_input_buff(inbuff, len + 1);
 }
 
 
@@ -30,7 +49,8 @@ void clr_stdin() {
  ******************************************************************************/
 
 /* Clears STDIN using read() */
-void rd_clr_stdin() {
+void rd_clr_stdin()
+{
 	char ch = '\0';
 	while (read(STDIN_FILENO, (void*)&ch, BYTE) && ch != '\n' && ch != EOF);
 }

@@ -203,8 +203,16 @@
 } /* end TIMESPEC_SUB */
 
 
+/* clears STDIN using getchar() */
+#define CLR_STDIN() ({														   \
+	char _ch = '\0';														   \
+	while ((_ch = getchar()) && (_ch != '\n' && _ch != EOF));				   \
+})
+
+
+/* input buffer for a dynamically allocated string and its length */
 struct input_buff {
-	char *buff;
+	char *inbuff;
 	size_t len
 };
 
