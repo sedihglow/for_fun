@@ -4,12 +4,24 @@
 
 #define INBUFF_LEN 512
 
+void newline_clear(void) /* {{{ */
+{
+	int i;
+	for (i=0; i < 10; ++i) {
+		printf("\n\n\n\n\n\n\n\n\n\n");
+	}
+	fflush(stdout);
+} /* end display_clear }}} */
+
 /*
  * fill an input buff struct with the characters in the char *buff.
- * If char *buff is NULL then only len is filled into the buffer and the
- * input buffers char* is allocated to length bytes
+ *
+ * If char *buff is NULL then input_buff struct's inbuff is allocated with
+ * len '\0' bytes and input_buff's len is set.
+ * otherwise,
+ * input_buff's inbuff gets set to the characters in char *buff
  */
-struct input_buff *init_input_buff(char *buff, size_t len)
+struct input_buff* init_input_buff(char *buff, size_t len) /* {{{ */
 {
 	struct input_buff *input = CALLOC(struct input_buff);
 	if (errno)
@@ -23,9 +35,14 @@ struct input_buff *init_input_buff(char *buff, size_t len)
 		strncpy(input->inbuff, buff, len);
 
 	return input;
-}
+} /* }}} */
 
-struct input_buff *fgets_input(FILE *fptr)
+/*
+ * Get user input using fgets and fills an input_buff struct with the result
+ * excluding the newline from the user input if applicable.
+ * Clears stdin if no newline is found (if input goes over INBUFF_LEN)
+ */
+struct input_buff* fgets_input(FILE *fptr) /* {{{ */
 {
 	char inbuff[INBUFF_LEN] = {'\0'};
 	size_t len = 0;
@@ -41,28 +58,18 @@ struct input_buff *fgets_input(FILE *fptr)
 
 	/* fill an input buffer to return */
 	return init_input_buff(inbuff, len + 1);
-}
-
+} /* }}} */
 
 /******************************************************************************
  * stdin/file buff functionality using read system call
  ******************************************************************************/
 
 /* Clears STDIN using read() */
-void rd_clr_stdin()
+void rd_clr_stdin() /* {{{ */
 {
 	char ch = '\0';
 	while (read(STDIN_FILENO, (void*)&ch, BYTE) && ch != '\n' && ch != EOF);
-}
-
-void newline_clear(void) /* {{{{ */
-{
-	int i;
-	for (i=0; i < 10; ++i) {
-		printf("\n\n\n\n\n\n\n\n\n\n");
-	}
-	fflush(stdout);
-} /* end display_clear }}} */
+} /* }}} */
 
 /*******************************************************************************
  * Int and Dbl comparison with type limits

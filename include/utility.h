@@ -212,11 +212,11 @@ struct input_buff *init_input_buff(char *buff, size_t len);
 
 /*
  * Use fgets to get a line from a stdin or a file.
- *
- *
- * returns - resulting array from fgets without the newline.
+ * returns a filled input_buff struct with user input and no '\n'
  */
-struct input_buff *fgets_input(FILE *fptr);
+struct input_buff* fgets_input(FILE *fptr);
+
+void newline_clear(void);
 
 void compare_int_limits(unsigned long long tocmp);
 void compare_dbl_limits(double tocmp);
