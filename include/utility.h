@@ -9,6 +9,7 @@
 #ifndef _UTL_SYS_H_
 #define _UTL_SYS_H_
 
+/* Thesea are just here for reference at the moment
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/time.h>
@@ -29,7 +30,7 @@
 #include <limits.h>
 #include <float.h>
 
-#define __USE_MISC 0 /* disable misc functionality for now */
+#define __USE_MISC 0 // disable misc functionality for now
 #ifndef __USE_MISC
 	#define __USE_MISC 1 // provide usleep
 #endif
@@ -41,23 +42,23 @@
 
 #define NDEBUG 1
 #include <assert.h>
+*/
+
+#define P_RD 0 // value for a pipe read fd in pipefd[2]
+#define P_WR 1 // value for a pip write fd in pipefd[2]
 
 #define SUCCESS 0
 #define FAILURE -1
 
 #define RW_END 0
 
-#define BYTE 1
-
-#define P_RD 0 // value for a pipe read fd in pipefd[2]
-#define P_WR 1 // value for a pip write fd in pipefd[2]
-
 /* GNU compiler native to hint for branch prediction in user space */
 #define _usrlikely(x)      __builtin_expect((x), 1)
 #define _usrunlikely(x)    __builtin_expect((x), 0)
 
 /* malloc family allocation macros */
-#define CALLOC(type)             ((type*) calloc(1, sizeof(type)))
+#define SINGLE_NMEMB 1
+#define CALLOC(type)             ((type*) calloc(SINGLE_NMEMB, sizeof(type)))
 #define CALLOC_VOID(nmemb, size) ((void*) calloc(nmemb, size))
 #define CALLOC_ARRAY(type, num)  ((type*) calloc(num, sizeof(type)))
 
@@ -193,28 +194,13 @@
 } /* end TIMESPEC_SUB */
 
 
-/* clears STDIN using getchar() */
-#define CLR_STDIN() {														   \
-	char _ch = '\0';														   \
-	while ((_ch = getchar()) && (_ch != '\n' && _ch != EOF));				   \
-}
-
 /* input buffer for a dynamically allocated string and its length */
-struct input_buff {
-	char *inbuff;
+struct buffer_info {
+	char *buff;
 	size_t len;
 };
 
 		/* Function prototypes */
-
-/* initialize and fill and input_buff struct */
-struct input_buff *init_input_buff(char *buff, size_t len);
-
-/*
- * Use fgets to get a line from a stdin or a file.
- * returns a filled input_buff struct with user input and no '\n'
- */
-struct input_buff* fgets_input(FILE *fptr);
 
 void newline_clear(void);
 

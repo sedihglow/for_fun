@@ -2,7 +2,6 @@
 #include "err_handle.h"
 
 
-#define INBUFF_LEN 512
 
 void newline_clear(void) /* {{{ */
 {
@@ -21,43 +20,23 @@ void newline_clear(void) /* {{{ */
  * otherwise,
  * input_buff's inbuff gets set to the characters in char *buff
  */
-struct input_buff* init_input_buff(char *buff, size_t len) /* {{{ */
+struct buffer_info* create_buffer_info(char *buff, size_t len) /* {{{ */
 {
-	struct input_buff *input = CALLOC(struct input_buff);
+	struct buffer_info *buffer = CALLOC(struct buffer_info);
 	if (errno)
-		errExit("Failed to calloc input_buffer");
+		errExit("Failed to calloc buffer_info struct");
+
+	if (len == 0)
+		return buffer;
 
 	input->len = len;
 
-	input->inbuff = CALLOC_ARRAY(char, len);
+	input->buff = CALLOC_ARRAY(char, len);
 
 	if (buff != NULL)
 		strncpy(input->inbuff, buff, len);
 
-	return input;
-} /* }}} */
-
-/*
- * Get user input using fgets and fills an input_buff struct with the result
- * excluding the newline from the user input if applicable.
- * Clears stdin if no newline is found (if input goes over INBUFF_LEN)
- */
-struct input_buff* fgets_input(FILE *fptr) /* {{{ */
-{
-	char inbuff[INBUFF_LEN] = {'\0'};
-	size_t len = 0;
-
-	/* get user input and remove the newline */
-	fgets(inbuff, INBUFF_LEN, fptr);
-	len = strlen(inbuff) - 1;
-	if (inbuff[len] == '\n') {
-		inbuff[len] = '\0';
-	} else {
-		CLR_STDIN()
-	}
-
-	/* fill an input buffer to return */
-	return init_input_buff(inbuff, len + 1);
+	return buffer;
 } /* }}} */
 
 /******************************************************************************

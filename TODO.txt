@@ -1,11 +1,62 @@
+		  ------- General todo's ------
+
 - Make submodule repos in case i make adjustments to errhandle and convnum and
   utility.h/.c
   - Comb through the two repos and adjust syntax formating to match up with this
     repo
 
-- Adjust makefile post adding submodules
+- Adjust makefile post adding submodules, this will be done once i fill out
+  utility.h at least.
 
 - adjust vimrc to identify when a header is holding C programming stuff
-  - OR make the default tab 8, probably do this for .h files for the time being
 
-- Fill out utility.h and utility.c functionalities.
+- learn make better
+
+- learn bash better for config scripts and the like
+
+	---- TODO's for the  for fun project ----
+- backtrack functionality
+- api and application functionalities
+- network stuff (rip off the rfc server ideas, b.net style)
+- system call funcionalities
+- portable C funcionalities using standard library
+- Probably keeping it C99 but mostly C89, at least pedantic C99
+- Hackin registers in C as the finally  (just do cool shit with it)
+- Bash script to adjust makefile based on new files etc.
+- assembly non-inline examples and functions
+- attribute and gcc optimization on fucking everything
+- Kernel module to give examples of system calls breaking into the kernel
+- kernel debugging techniques using the example kernel module
+- data structure examples
+- get the random repo i worked on early in my programming career and see
+  about using hardware random values (not sure if i have the hardware for "true"
+  random)
+
+- VIM VIM VIM VIM
+  - big vim project, keep digging through docs, finalize vimrc
+  - compile from source
+  - bash script to have different compile configs based on system
+
+	-- Current work ---
+--- file.h ---
+- test functions for user space file information found in file.h
+
+--- utility.h ---
+- Trim the fat in utility.h
+- reado functionalities for all the malloc family
+
+--- string funcionalities ---
+- file for string.h funcionalities as an API where appropriate
+- strtok once file i/o examples are finishes
+
+-- argument list and parsing ---
+- look into zargs i believe it was called
+
+	--------- Random questions that pop up and ideas -------
+-- String family --
+- What happens when strncpy gets passed len 0?
+
+-- malloc family --
+- what happens when calloc gets passed 0 len
+
+
