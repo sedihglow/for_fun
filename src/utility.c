@@ -1,5 +1,4 @@
 #include "utility.h"
-#include "err_handle.h"
 
 
 
@@ -13,23 +12,17 @@ void newline_clear(void) /* {{{ */
 } /* end display_clear }}} */
 
 /*
- * fill an input buff struct with the characters in the char *buff.
- *
- * If char *buff is NULL then input_buff struct's inbuff is allocated with
- * len '\0' bytes and input_buff's len is set.
- * otherwise,
- * input_buff's inbuff gets set to the characters in char *buff
  */
 struct buffer_info* create_buffer_info(char *buff, size_t len) /* {{{ */
 {
 	struct buffer_info *buffer = CALLOC(struct buffer_info);
 	if (errno)
-		errExit("Failed to calloc buffer_info struct");
+		return errno;
+
+	input->len = len;
 
 	if (len == 0)
 		return buffer;
-
-	input->len = len;
 
 	input->buff = CALLOC_ARRAY(char, len);
 

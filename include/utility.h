@@ -7,7 +7,7 @@
  *****************************************************************************/
 
 #ifndef _UTL_SYS_H_
-#define _UTL_SYS_H_
+#define _UTL_SYS_H_ 1
 
 /* Thesea are just here for reference at the moment
 #include <sys/types.h>
@@ -53,8 +53,8 @@
 #define RW_END 0
 
 /* GNU compiler native to hint for branch prediction in user space */
-#define _usrlikely(x)      __builtin_expect((x), 1)
-#define _usrunlikely(x)    __builtin_expect((x), 0)
+#define _likely(x)      __builtin_expect((x), 1)
+#define _unlikely(x)    __builtin_expect((x), 0)
 
 /* malloc family allocation macros */
 #define SINGLE_NMEMB 1

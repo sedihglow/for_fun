@@ -32,10 +32,18 @@
   about using hardware random values (not sure if i have the hardware for "true"
   random)
 
+- pipes, processes, interprocess communication, systemcalls/clib
+
 - VIM VIM VIM VIM
   - big vim project, keep digging through docs, finalize vimrc
   - compile from source
   - bash script to have different compile configs based on system
+
+
+- go through the repo of embedded systems functionalities for the shit i am
+  doing in user land right now and see whats up. Not gonna intentionally make
+  them right now using c lib functions or whatever i mean. Not c lib functions
+  but basically not the embedded version of shit yet.
 
 	-- Current work ---
 --- file.h ---
@@ -48,6 +56,20 @@
 --- string funcionalities ---
 - file for string.h funcionalities as an API where appropriate
 - strtok once file i/o examples are finishes
+- strncpy information to take into consideration, likely making a wrapper
+       If  there is no terminating null byte in the first n bytes of src,
+       strncpy() produces an unterminated string in dest.
+       If buf has length buflen, you can force	 termination  using  something
+       like the following:
+
+	   if (buflen > 0) {
+	       strncpy(buf, str, buflen - 1);
+	       buf[buflen - 1]= '\0';
+	   }
+
+       (Of  course,  the  above	 technique ignores the fact that, if src contains more than buflen - 1
+       bytes, information is lost in the copying to dest.)
+
 
 -- argument list and parsing ---
 - look into zargs i believe it was called
@@ -58,5 +80,10 @@
 
 -- malloc family --
 - what happens when calloc gets passed 0 len
+
+-- stdio family --
+- feof() - When reading from a stream and EOF is encountered on a last read that fills
+  characters, is the EOF flag from feof set or is it on next read?
+- ferror() - same as above regarding eof
 
 

@@ -6,6 +6,7 @@
 #define __FILE_H 0
 
 #include <stdio.h>
+#include "utility.h"
 
 struct file_data {
 	FILE *fp;
