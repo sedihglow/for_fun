@@ -70,6 +70,29 @@
        (Of  course,  the  above	 technique ignores the fact that, if src contains more than buflen - 1
        bytes, information is lost in the copying to dest.)
 
+--- allocation ---
+- make a version of realloc with memcpy
+- make a version of realloc with calloc
+- maybe make something with realloc
+- test this brace allocation bullshit and see if calloc is implemented with it
+  these days. Seems intereseting but probably c23 or some shit.
+  C allows you to initialize arrays during memory allocation using brace
+  initialization. This can be a concise way to set all elements to \0 directly.
+  Here's the code:
+
+	#include <stdio.h>
+	#include <stdlib.h>
+
+	int main() {
+	  // Allocate memory and initialize with null terminators
+	  char* arr = malloc(10 * sizeof(char)) = {'\0'};
+
+	  // Free the allocated memory
+	  free(arr);
+
+	  return 0;
+	}
+
 
 -- argument list and parsing ---
 - look into zargs i believe it was called
@@ -85,5 +108,3 @@
 - feof() - When reading from a stream and EOF is encountered on a last read that fills
   characters, is the EOF flag from feof set or is it on next read?
 - ferror() - same as above regarding eof
-
-

@@ -27,7 +27,11 @@
  */
 int fill_file_rbuff(struct file_data *file, char *inbuff, size_t len)
 {
-	/* check if len is valid */
+	/* check if len is valid
+	 * TODO: If len is set negative when passed theres probably an issue
+	 * so there needs to be a limit check if there isnt already in the
+	 * c env
+	 */
 	if (_unlikely(len == 0)) {
 		fputs("fill_file_rbuff: len == 0, immediate return", stderr);
 		return IO_FAILURE;
@@ -43,26 +47,30 @@ int fill_file_rbuff(struct file_data *file, char *inbuff, size_t len)
 			return errno;
 	}
 
-
 	/* if rbuff is allocated see if it matches len already */
 	if (_likely(file->rbuff > NULL)) {
 		if (_likely(file->rbuff_len != len)) {
 			file->rbuff_len = len;
-			free(file->rbuff);
-
-
-
+			/* alloc the new length buffer for rbuff */
+			recalloc(file->rbuff, len);
+		} else {
+			memset(file->rbuff, '\0', len);
+		}
+	} else {
+		if (_unlikely(!file->rbuff)) {
+			CALLC_ARRAY(char, len);
+		} else {
+			/* rbuff was set to negetive */
+			return;
 		}
 	}
 
-	/* if rbuff does not match len, reallocate to len bytes */
-
-
 	/* if inbuff is NULL return code int 134 */
+	if (un
 
 	/* if inbuff is not NULL, fill rbuff with inbuff */
 
-	/* return
+	return;
 }
 
 /*
@@ -95,10 +103,12 @@ int fgets_input(struct file_data *file) /* {{{ */
 	}
 
 	len = strnlen(inbuff, INBUFF_LEN) - 1;
-	if (inbuff[len] == '\n') {
+	if (_likely(inbuff[len] == '\n')) {
 		inbuff[len] = '\0';
 	} else {
-		clear_stdin();
+		if (file->fp == stdin) {
+			clear_stdin();
+		}
 	}
 
 	/* fills rbuff and rbuff_len */
