@@ -99,7 +99,7 @@
 
 	--------- Random questions that pop up and ideas -------
 -- String family --
-- What happens when strncpy gets passed len 0?
+- What happens when strncpy gets passed len 0? returns
 
 -- malloc family --
 - what happens when calloc gets passed 0 len

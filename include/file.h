@@ -77,4 +77,5 @@ static inline void clear_stdin(void)
 {
 	char _ch = '\0';
 	while ((_ch = getchar()) && (_ch != '\n' && _ch != EOF));
-} #endif
+}
+#endif

@@ -11,6 +11,8 @@
 #define FIO_FAILURE -1
 #define FIO_SUCCESS 0
 
+#define PASSED_NULL 134 /* 134 is one value above max errno */
+
 /*
  * Fills the struct file_data's rbuff and rbuff_len.
  * Checks if rbuff is allocated and if it is not it will be allocated to the
@@ -43,34 +45,45 @@ int fill_file_rbuff(struct file_data *file, char *inbuff, size_t len)
 	/* check if rbuff needs allocation if already NULL */
 	if (_unlikely(file->rbuff == NULL)) {
 		file->rbuff = CALLOC_ARRAY(char, len);
-		if (errno)
+		if (errno) {
+			fputs("fill_file_rbuff: rbuff calloc failure", stderr);
 			return errno;
+		}
 	}
 
 	/* if rbuff is allocated see if it matches len already */
 	if (_likely(file->rbuff > NULL)) {
 		if (_likely(file->rbuff_len != len)) {
-			file->rbuff_len = len;
 			/* alloc the new length buffer for rbuff */
 			recalloc(file->rbuff, len);
-		} else {
+			if (errno) {
+				fputs("fill_file_rbuff: recalloc failure",
+				      stderr);
+				return errno;
+			}
+		} else { /* if len is the same set to '\0' */
 			memset(file->rbuff, '\0', len);
 		}
-	} else {
-		if (_unlikely(!file->rbuff)) {
-			CALLC_ARRAY(char, len);
-		} else {
-			/* rbuff was set to negetive */
-			return;
-		}
+	} else if (_unlikely(!file->rbuff || file->rbuff < NULL)) {
+			/* rbuff is not notallocated, check rbuff */
+			file->rbuff = CALLC_ARRAY(char, len);
+			if (errno) {
+				fputs("fill_file_rbuff: rbuff calloc failure",
+				      stderr);
+				return errno;
+			}
 	}
 
+	file->rbuff_len = len;
+
 	/* if inbuff is NULL return code int 134 */
-	if (un
+	if (_unlikely(!inbuff))
+		return PASSED_NULL; /* still success */
 
 	/* if inbuff is not NULL, fill rbuff with inbuff */
+	strncpy(file->rbuff, inbuff, len);
 
-	return;
+	return FIO_SUCCESS;
 }
 
 /*
