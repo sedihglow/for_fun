@@ -44,6 +44,10 @@
 #include <assert.h>
 */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
 #define P_RD 0 // value for a pipe read fd in pipefd[2]
 #define P_WR 1 // value for a pip write fd in pipefd[2]
 

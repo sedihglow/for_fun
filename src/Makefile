@@ -1,7 +1,7 @@
 BIN = ../bin/d20.out
 CC = gcc
 CCFLAGS = -I ../include -c -Wall -Wextra
-CCFLAGS+= -m64 -O0 -g -pedantic -std=c11
+CCFLAGS+= -m64 -O0 -g -pedantic -std=c99
 LDFLAGS =
 RUNARGS = --verbose --add -c argc -b optargs1 optargs2
 VAL_ARGS = --leak-check=full

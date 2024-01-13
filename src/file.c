@@ -3,6 +3,8 @@
  */
 
 #include "file.h"
+#include "mfuncts.h"
+
 #include <string.h>
 #include <errno.h>
 
@@ -21,11 +23,11 @@
  * the length of len bytes using calloc().
  *
  * returns:
- *	if len == 0: IO_FAILURE is returned and rbuff/inbuff is not checked.
+ *	if len == 0:FIO_FAILURE is returned and rbuff/inbuff is not checked.
  *	if an error occurs: errno is returned
  *	if inbuff is NULL and rbuff is allocated: int code 134 (1 higher than
  *							        errno max value)
- *	If sucess: IO_SUCCESS is returned
+ *	If sucess:FIO_SUCCESS is returned
  */
 int fill_file_rbuff(struct file_data *file, char *inbuff, size_t len)
 {
@@ -36,14 +38,14 @@ int fill_file_rbuff(struct file_data *file, char *inbuff, size_t len)
 	 */
 	if (_unlikely(len == 0)) {
 		fputs("fill_file_rbuff: len == 0, immediate return", stderr);
-		return IO_FAILURE;
+		return FIO_FAILURE;
 	}
 
 	/* reset rbuff_len to 0 in case reallocation fails (may move this around
 	 * unsure at the moment TODO */
 
 	/* check if rbuff needs allocation if already NULL */
-	if (_unlikely(file->rbuff == NULL)) {
+	if (_unlikely(file->rbuff == (char*)NULL)) {
 		file->rbuff = CALLOC_ARRAY(char, len);
 		if (errno) {
 			fputs("fill_file_rbuff: rbuff calloc failure", stderr);
@@ -52,10 +54,10 @@ int fill_file_rbuff(struct file_data *file, char *inbuff, size_t len)
 	}
 
 	/* if rbuff is allocated see if it matches len already */
-	if (_likely(file->rbuff > NULL)) {
-		if (_likely(file->rbuff_len != len)) {
+	if (_likely(file->rbuff > (char*)NULL)) {
+		if (_likely(*file->rbuff_len != len)) {
 			/* alloc the new length buffer for rbuff */
-			recalloc(file->rbuff, len);
+			recalloc(&file->rbuff, len);
 			if (errno) {
 				fputs("fill_file_rbuff: recalloc failure",
 				      stderr);
@@ -64,9 +66,9 @@ int fill_file_rbuff(struct file_data *file, char *inbuff, size_t len)
 		} else { /* if len is the same set to '\0' */
 			memset(file->rbuff, '\0', len);
 		}
-	} else if (_unlikely(!file->rbuff || file->rbuff < NULL)) {
+	} else if (_unlikely(!file->rbuff || file->rbuff < (char*)NULL)) {
 			/* rbuff is not notallocated, check rbuff */
-			file->rbuff = CALLC_ARRAY(char, len);
+			file->rbuff = CALLOC_ARRAY(char, len);
 			if (errno) {
 				fputs("fill_file_rbuff: rbuff calloc failure",
 				      stderr);
@@ -102,12 +104,12 @@ int fgets_input(struct file_data *file) /* {{{ */
 	/* get user input and remove the newline */
 	fgets_ret = fgets(inbuff, INBUFF_LEN, file->fp);
 	/* NULL on error or EOF */
-	if (_unlikely(fgets_ret == NULL)) {
+	if (_unlikely(fgets_ret == (char*)NULL)) {
 		/*
 		 * TEST: check if EOF, FAILURE should not be returned due to EOF
 		 * unless only EOF is encountered
 		 */
-		eof_ret = feof();
+		eof_ret = feof(file->fp);
 		if (_likely(eof_ret > 0)) {
 			return eof_ret;
 		} else {

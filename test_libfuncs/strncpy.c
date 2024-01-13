@@ -34,23 +34,24 @@ bool test_strncpy(char *dest, char *src, size_t dest_size, size_t src_size,
 		return true;
 
 	if (len == dest_size) {
-		printf(L_EQ_D_STR "len = %ld, dest_size = %ld", len, dest_size);
-		ret = stncpy(dest, src, len);
+		printf(L_EQ_D_STR "len = %ld, dest_size = %ld\n", len, dest_size);
+		ret = strncpy(dest, src, len);
 
 	} else if (len > dest_size) {
-		printf(L_LT_D_STR "len = %ld, dest_size = %ld", len, dest_size);
-		puts("truncating to fit in dest w/ '\0'\n");
+		printf(L_GT_D_STR "len = %ld, dest_size = %ld\n", len, dest_size);
+		puts("truncating to fit in dest w/ 0x0\n");
 		len = dest_size - 1;
-		ret = stncpy(dest, src, len);
+		ret = strncpy(dest, src, len);
+		puts("post strncpy len > dest_size");
 		dest[len] = '\0';
 
 	} else if (len < dest_size) {
-		printf(L_LT_D_STR "len = %ld, dest_size = %ld", len, dest_size);
-		ret = stncpy(dest, src, len);
+		printf(L_LT_D_STR "len = %ld, dest_size = %ld\n", len, dest_size);
+		ret = strncpy(dest, src, len);
 	}
 
 	if (ret == dest) {
-		printf("success: ret = %s, dest = %s, src = %s",
+		printf("success: ret = %s, dest = %s, src = %s\n",
 			ret, dest, src);
 		return true;
 	}
@@ -67,13 +68,13 @@ bool util_strncpy(char *dest, char *src, size_t dest_size, size_t src_size,
 
 	if (len == dest_size) {
 		printf(L_EQ_D_STR "len = %ld, dest_size = %ld", len, dest_size);
-		ret = stncpy(dest, src, len);
+		ret = strncpy(dest, src, len);
 
 	} else if (len > dest_size) {
 		printf(L_LT_D_STR "len = %ld, dest_size = %ld", len, dest_size);
 		puts("truncating to fit in dest w/ '\0'\n");
 		len = dest_size - 1;
-		ret = stncpy(dest, src, len);
+		ret = strncpy(dest, src, len);
 		dest[len] = '\0';
 	}
 
@@ -85,6 +86,7 @@ bool util_strncpy(char *dest, char *src, size_t dest_size, size_t src_size,
 
 	return false;
 }
+
 
 
 int main(void)
