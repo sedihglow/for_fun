@@ -6,7 +6,6 @@
  */
 int recalloc(void **ptr, size_t len)
 {
-
 	if (_unlikely(!(*ptr))) {
 		*ptr = CALLOC_ARRAY(char, len);
 		if (_unlikely(errno))

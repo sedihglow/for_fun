@@ -1,7 +1,5 @@
 #include "utility.h"
 
-
-
 void newline_clear(void) /* {{{ */
 {
 	int i;
@@ -12,35 +10,34 @@ void newline_clear(void) /* {{{ */
 } /* end display_clear }}} */
 
 /*
+ * TODO:
+ * Not a finished function, printouts on error need to be done and just
+ * generally check the shit for the generic buffer fill and handling memory on
+ * error before exiting the function.
+ *
+ * current functionality:
+ * create a buffer info struct even if len is equal to 0, if len == 0 do not
+ * allocate anything in the buffer string buff since no length is given.
  */
-struct buffer_info* create_buffer_info(char *buff, size_t len) /* {{{ */
+struct buffer_info* create_buffer_info(char *inbuff, size_t len) /* {{{ */
 {
 	struct buffer_info *buffer = CALLOC(struct buffer_info);
 	if (errno)
-		return errno;
+		return NULL;
 
-	input->len = len;
+	buffer->len = len;
 
 	if (len == 0)
 		return buffer;
 
-	input->buff = CALLOC_ARRAY(char, len);
+	buffer->buff = CALLOC_ARRAY(char, len);
 
-	if (buff != NULL)
-		strncpy(input->inbuff, buff, len);
+	if (!buffer->buff)
+		return NULL;
+
+	strncpy(buffer->buff, inbuff, len);
 
 	return buffer;
-} /* }}} */
-
-/******************************************************************************
- * stdin/file buff functionality using read system call
- ******************************************************************************/
-
-/* Clears STDIN using read() */
-void rd_clr_stdin() /* {{{ */
-{
-	char ch = '\0';
-	while (read(STDIN_FILENO, (void*)&ch, BYTE) && ch != '\n' && ch != EOF);
 } /* }}} */
 
 /*******************************************************************************
@@ -48,6 +45,9 @@ void rd_clr_stdin() /* {{{ */
  * TODO: Add char unsigned char and unsigned long, see about long long max
  * definition unsure if its in the limits header. Should look at limits header
  * for fun
+ *
+ * This function needs to be better, the order it checked the tocmp may be wrong
+ * or i need to create else trees with it. figure it out later
  ******************************************************************************/
 void compare_int_limits(unsigned long long tocmp) /* {{{ */
 {
@@ -69,6 +69,11 @@ void compare_int_limits(unsigned long long tocmp) /* {{{ */
 	if (tocmp <= UINT_MAX) {
 		printf("(tocmp = %llu) is < (UINT_MAX = %u)\n", \
 			tocmp, UINT_MAX);
+	}
+
+	if (tocmp <= USHRT_MAX) {
+		printf("(tocmp = %llu) is < (USHRT_MAX = %u)\n", \
+			tocmp, USHRT_MAX);
 	}
 } /* }}} */
 

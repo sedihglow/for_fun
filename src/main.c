@@ -23,16 +23,17 @@ int main(int argc, char *argv[])
 			{"brief",   no_argument, (int*)&verbose_flag, false},
 			/* These options don’t set a flag.
 			   We distinguish them by their indices. */
-			{"add",     no_argument,       NULL, 'a'},
-			{"append",  no_argument,       NULL, 'b'},
+			{"insert",  no_argument,       NULL, 'i'},
+			{"append",  no_argument,       NULL, 'a'},
 			{"delete",  required_argument, NULL, 'd'},
 			{"create",  required_argument, NULL, 'c'},
 			{"file",    required_argument, NULL, 'f'},
+			{"help",    no_argument,       NULL, 'h'},
 			{0, 0, 0, 0}
 		};
 
 
-		c = getopt_long(argc, argv, "abc:d:f:",
+		c = getopt_long(argc, argv, "iad:c:f:h",
 			       long_options, &option_index);
 
 		/* Detect the end of the options. */
@@ -40,7 +41,7 @@ int main(int argc, char *argv[])
 			break;
 
 		switch (c) {
-		case 0:
+		case 0: /* TODO: Test case 0 option in long option */
 			/* If this option set a flag, do nothing else now. */
 			if (long_options[option_index].flag != 0)
 				break;
@@ -51,11 +52,11 @@ int main(int argc, char *argv[])
 				printf(" with arg %s", optarg);
 			printf("\n");
 		break;
+		case 'i':
+			puts("option -i\n");
+		break;
 		case 'a':
 			puts("option -a\n");
-		break;
-		case 'b':
-			puts("option -b\n");
 		break;
 		case 'c':
 			printf("option -c with value `%s'\n", optarg);
@@ -65,6 +66,15 @@ int main(int argc, char *argv[])
 		break;
 		case 'f':
 			printf("option -f with value `%s'\n", optarg);
+		break;
+		case 'h':
+			printf("-- Progam: for_fun --\n"
+			       "--help, -h: Print this help menu and exit\n"
+			       "--insert, -i\n"
+			       "--add,    -a\n"
+			       "--create, -c\n"
+			       "--delete, -d\n"
+			       "--file,   -f\n");
 		break;
 		case '?':
 			/* getopt_long already printed an error message. */
@@ -87,10 +97,6 @@ int main(int argc, char *argv[])
 			printf("%s ", argv[optind++]);
 		putchar('\n');
 	}
-
-
-
-
 
 	exit(EXIT_SUCCESS);
 }

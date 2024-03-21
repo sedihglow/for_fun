@@ -47,6 +47,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <float.h>
+#include <errno.h>
+#include <string.h>
 
 #define P_RD 0 // value for a pipe read fd in pipefd[2]
 #define P_WR 1 // value for a pip write fd in pipefd[2]
@@ -80,62 +83,6 @@
  * stdin buffer handling with read() system calls
  *
  ******************************************************************************/
-
-/*******************************************************************************
- * buff is set to '\0' for nByte before read occures.
- *  If nothing is read, buff[0] = '\0', retBytes == 0.
- *  - fd    == int   , File descriptor used for allocInputBuff()
- *  - buff  == char* , Buffer to be filled with character data from fd.
- *  - nbyte == size_t, number of bytes to read
- *  - retBytes == ssize_t, number of bytes read from file
- *                   (typically the size of buffer array)
- ******************************************************************************/
-#define READ_INPUT(fd, buff, nByte, retBytes)                                  \
-{                                                                              \
-	assert(buff != NULL);                                                  \
-	memset(buff, '\0', nByte);                                             \
-	if(_usrunlikely((retBytes = read(fd, (void*) buff, nByte)) == FAILURE))\
-		errExit("READ_INPUT, read() failure");                                 \
-} /* end READ_INPUT */
-
-/******************************************************************************
- * Copy a variable ammount of characters from a buffer based on a given
- * position. Places a null value at end of inBuff
- *
- * Place resulting string in resStr based on a given conditional.
- * resStr is cleared by resLen to '\0' values before being written to.
- *
- * To make sure conditional was met and copied check the value before the first
- * '\0' to ensure it is one of your delimiters, otherwise
- * -end of buffer- was reached.
- *
- * If data in inbuff is a string, the end of the string is found when the last
- * two index of resStr is '\0'.
- *
- * EOF is reached when the resulting string has more than 1 terminating '\0'
- * value.
- *
- * - fd     == int  , File descriptor corresponding to inBuf.
- * - inBuf  == char*, copy from buff. Must not be NULL, leave room for '\0'
- * - bfPl   == int, the current location inside inBuf.
- * - nbyte  == size_t, number of bytes to read
- * - resStr == char*, buffer to copy to.
- * - resLen == size_t, length of resStr for conidional overflow stop point
- * - conditional == The conditionals desired in the copy process.
- *                Example: inBuf[i] != ' ' && inBuf[i] != '\n'
- ******************************************************************************/
-#define PARSE_BUFF(fd, inBuf, bfPl, resStr, resLen, conditional)\
-{                                                                              \
-	int _TM_ = 0;                                                          \
-	assert(resStr != NULL && inBuf != NULL);                               \
-									       \
-	memset(resStr, '\0', resLen);                                          \
-	for (_TM_ = 0; conditional && _TM_ < resLen-1; ++_TM_) {	       \
-		resStr[_TM_] = inBuf[bfPl];                                    \
-		++bfPl; /* increase buff placement */			       \
-	} /* end for */                                                        \
-	resStr[_TM_] = '\0';                                                   \
-} /* end PARSE_BUFF */
 
 /*******************************************************************************
  * TODO: Adjust this macro or make an alternate that can call a function with
@@ -197,12 +144,13 @@
 	}                                                                      \
 } /* end TIMESPEC_SUB */
 
-
 /* input buffer for a dynamically allocated string and its length */
 struct buffer_info {
 	char *buff;
 	size_t len;
 };
+
+struct buffer_info* create_buffer_info(char *input, size_t len);
 
 		/* Function prototypes */
 
@@ -210,6 +158,5 @@ void newline_clear(void);
 
 void compare_int_limits(unsigned long long tocmp);
 void compare_dbl_limits(double tocmp);
-
 #endif
 /************ EOF **************/

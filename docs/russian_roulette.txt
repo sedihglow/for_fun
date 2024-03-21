@@ -1,0 +1,28 @@
+------------
+This is the design and info for the dice game russian roullette
+------------
+-- Rules --
+1. 5 - 6 players
+2. Everyone gets a die.
+3. Everyone rolls a die.
+4. Those who get a bad roll hold onto their die.
+5. Those who get a good roll set their die down for the next turn.
+6. if dice is still in play for the player
+	- reroll until one player is left standing
+7. Last player in the round gets eliminated.
+8. restart at (1) until only one survivor is left
+
+NOTE: May make a 6 instakill
+
+-- Dice num game --
+1- individuality
+1,burned- self-individuality (X)
+2- co-bitches on top
+3- Mother-Nature + J
+4- Friendship (X)
+5- Jesus
+6- Double Mother-Nature, life+death=life (X)
+
+-- seed based on --
+
+-- probablititys --
