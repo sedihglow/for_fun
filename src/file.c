@@ -68,15 +68,20 @@ struct file_data* file_data_init(void)
 {
 	struct file_data *fdata;
 
-	fdata = CALLOC(sizeof(struct file_data));
+	/*
+	 * calloc of the alloc family sets the allocated data to 0 by default,
+	 * setting all the fdata member to NULL for us.
+	 */
+	fdata = CALLOC(struct file_data);
 
-	fdata->fp = 0; /* file pointer, fr/w fopen etc. */
-	fdata->fd = 0; /* file descriptor, r/w, open, fp -> fd */
+	fdata->fp = NULL; /* file pointer, fr/w fopen etc. */
+	fdata->fd = NULL; /* file descriptor, r/w, open, fp -> fd */
 
 	/* file and path stuff */
-	fdata->pathname = 0;
+	fdata->pathname = CALLOC_ARRAY(;
 	fdata->pathlen = 0;
 	fdata->mode = 0;
+
 	/* TODO:
 	 * mode max length may differ if not using the fp family but wanting
 	 * to use some other implementation, by default it is set to
@@ -93,7 +98,7 @@ struct file_data* file_data_init(void)
 	fdata->wbuff = 0;
 	fdata->wbuff_len = 0; /* includes the '\0' value */
 
-	/* r/w size/nmemb functionality */
+	/* fr/fw size/nmemb functionality, (man 3 fread()) */
 	fdata->rw_size = 0;
 	fdata->rw_nmemb = 0;
 
