@@ -1,0 +1,131 @@
+j@jamr:~/git_repos/for_fun/test_libfuncs/sizeof_n_arrays_n_ptrs$ gcc --std-gnu89 -Wall -pedantic -Wextra
+array_sizes_for_reads.c
+gcc: error: unrecognized command-line option ‘--std-gnu89’; did you mean ‘--std=gnu89’?
+j@jamr:~/git_repos/for_fun/test_libfuncs/sizeof_n_arrays_n_ptrs$ gcc --std=gnu89 -Wall -pedantic -Wextra
+array_sizes_for_reads.c
+array_sizes_for_reads.c: In function ‘fread_man_example’:
+array_sizes_for_reads.c:33:9: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-s
+tatement]
+   33 |         unsigned char buffer[4];
+      |         ^~~~~~~~
+array_sizes_for_reads.c:37:29: warning: ISO C90 does not support the ‘z’ gnu_printf length modifier [-Wfo
+rmat=]
+   37 |             fprintf(stderr, "fread() failed: %zu\n", ret);
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~
+array_sizes_for_reads.c:46:29: warning: ISO C90 does not support the ‘z’ gnu_printf length modifier [-Wfo
+rmat=]
+   46 |             fprintf(stderr, "fread() failed: %zu\n", ret);
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~
+array_sizes_for_reads.c: In function ‘main’:
+array_sizes_for_reads.c:69:16: warning: C++ style comments are not allowed in ISO C90
+   69 |                //" unsigned char   pachar[15] : %hhn\n"
+      |                ^
+array_sizes_for_reads.c:69:16: note: (this will be reported only once per input file)
+array_sizes_for_reads.c:67:16: warning: format ‘%f’ expects argument of type ‘double’, but argument 3 has
+ type ‘long unsigned int’ [-Wformat=]
+   67 |         printf("Array size table using fread() macro example from man 3\n"
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+array_sizes_for_reads.c:70:53: note: format string is defined here
+   70 |                " unsigned char   ucharr[10] : %ld, %f, %ld\n"
+      |                                                    ~^
+      |                                                     |
+      |                                                     double
+      |                                                    %ld
+array_sizes_for_reads.c:67:16: warning: format ‘%f’ expects argument of type ‘double’, but argument 6 has
+ type ‘long unsigned int’ [-Wformat=]
+   67 |         printf("Array size table using fread() macro example from man 3\n"
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+array_sizes_for_reads.c:71:53: note: format string is defined here
+   71 |                " unsigned int    uintarr[5] : %ld, %f, %ld\n"
+      |                                                    ~^
+      |                                                     |
+      |                                                     double
+      |                                                    %ld
+array_sizes_for_reads.c:67:16: warning: format ‘%ld’ expects a matching ‘long int’ argument [-Wformat=]
+   67 |         printf("Array size table using fread() macro example from man 3\n"
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+array_sizes_for_reads.c:71:58: note: format string is defined here
+   71 |                " unsigned int    uintarr[5] : %ld, %f, %ld\n"
+      |                                                        ~~^
+      |                                                          |
+      |                                                          long int
+array_sizes_for_reads.c:67:16: warning: format ‘%ld’ expects a matching ‘long int’ argument [-Wformat=]
+   67 |         printf("Array size table using fread() macro example from man 3\n"
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+array_sizes_for_reads.c:72:49: note: format string is defined here
+   72 |                " unsigned long   ularr[17]  : %ld, %f, %ld\n"
+      |                                               ~~^
+      |                                                 |
+      |                                                 long int
+array_sizes_for_reads.c:67:16: warning: format ‘%f’ expects a matching ‘double’ argument [-Wformat=]
+   67 |         printf("Array size table using fread() macro example from man 3\n"
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+array_sizes_for_reads.c:72:53: note: format string is defined here
+   72 |                " unsigned long   ularr[17]  : %ld, %f, %ld\n"
+      |                                                    ~^
+      |                                                     |
+      |                                                     double
+array_sizes_for_reads.c:67:16: warning: format ‘%ld’ expects a matching ‘long int’ argument [-Wformat=]
+   67 |         printf("Array size table using fread() macro example from man 3\n"
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+array_sizes_for_reads.c:72:58: note: format string is defined here
+   72 |                " unsigned long   ularr[17]  : %ld, %f, %ld\n"
+      |                                                        ~~^
+      |                                                          |
+      |                                                          long int
+array_sizes_for_reads.c:67:16: warning: format ‘%f’ expects a matching ‘double’ argument [-Wformat=]
+   67 |         printf("Array size table using fread() macro example from man 3\n"
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+array_sizes_for_reads.c:73:39: note: format string is defined here
+   73 |                " float  uflarr[15] : %f, %f, %ld\n"
+      |                                      ~^
+      |                                       |
+      |                                       double
+array_sizes_for_reads.c:67:16: warning: format ‘%f’ expects a matching ‘double’ argument [-Wformat=]
+   67 |         printf("Array size table using fread() macro example from man 3\n"
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+array_sizes_for_reads.c:73:43: note: format string is defined here
+   73 |                " float  uflarr[15] : %f, %f, %ld\n"
+      |                                          ~^
+      |                                           |
+      |                                           double
+array_sizes_for_reads.c:67:16: warning: format ‘%ld’ expects a matching ‘long int’ argument [-Wformat=]
+   67 |         printf("Array size table using fread() macro example from man 3\n"
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+array_sizes_for_reads.c:73:48: note: format string is defined here
+   73 |                " float  uflarr[15] : %f, %f, %ld\n"
+      |                                              ~~^
+      |                                                |
+      |                                                long int
+array_sizes_for_reads.c:67:16: warning: format ‘%f’ expects a matching ‘double’ argument [-Wformat=]
+   67 |         printf("Array size table using fread() macro example from man 3\n"
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+array_sizes_for_reads.c:74:39: note: format string is defined here
+   74 |                " double udblarr[8] : %f, %f, %ld\n",
+      |                                      ~^
+      |                                       |
+      |                                       double
+array_sizes_for_reads.c:67:16: warning: format ‘%f’ expects a matching ‘double’ argument [-Wformat=]
+   67 |         printf("Array size table using fread() macro example from man 3\n"
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+array_sizes_for_reads.c:74:43: note: format string is defined here
+   74 |                " double udblarr[8] : %f, %f, %ld\n",
+      |                                          ~^
+      |                                           |
+      |                                           double
+array_sizes_for_reads.c:67:16: warning: format ‘%ld’ expects a matching ‘long int’ argument [-Wformat=]
+   67 |         printf("Array size table using fread() macro example from man 3\n"
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+array_sizes_for_reads.c:74:48: note: format string is defined here
+   74 |                " double udblarr[8] : %f, %f, %ld\n",
+      |                                              ~~^
+      |                                                |
+      |                                                long int
+array_sizes_for_reads.c:57:25: warning: unused variable ‘pachar’ [-Wunused-variable]
+   57 |         unsigned char   pachar[15] = {0x2, 0x4, 0x8, 0x10, 0x15};
+      |                         ^~~~~~
+array_sizes_for_reads.c: In function ‘fread_man_example’:
+array_sizes_for_reads.c:53:1: warning: control reaches end of non-void function [-Wreturn-type]
+   53 | }
+      | ^
+

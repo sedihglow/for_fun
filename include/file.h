@@ -51,10 +51,10 @@ struct file_data {
 	int   fd; /* file descriptor, r/w, open, fp -> fd */
 
 	/* file and path stuff */
-	char   *pathname;
-	size_t *pathlen;
-	char   *mode;
-	uint8_t oct_mode
+	char    *pathname;
+	size_t  *pathlen;
+	char    *mode;
+	uint8_t *oct_mode
 
 	size_t *mode_len;
 	size_t *mode_maxlen; /* includes '\0' */
@@ -65,9 +65,9 @@ struct file_data {
 	char   *wbuff;
 	size_t *wbuff_len; /* includes the '\0' value */
 
-	/* r/w size/nmemb functionality */
-	size_t *rw_size;
-	size_t *rw_nmemb;
+	/* r/w size/nmemb argument functionality (man 3 fread()) */
+	size_t *rw_tsize; /* sizeof(type) of buffer for fr/fw */
+	size_t *rw_nmemb; /* number of array elements for fr/fw buffer, size*len */
 
 	/* fseek functionality */
 	long *offset; /* offset of place inside the current file stream */
@@ -79,7 +79,7 @@ struct file_data {
 
 static inline void open_fp(struct file_data *fdata)
 {
-	(fdata->fp = fopen(fdata->pathname, fdata->mode));
+	return (fdata->fp = fopen(fdata->pathname, fdata->mode));
 }
 
 /* returns the number of bytes read */
@@ -128,7 +128,6 @@ int fgets_input(struct file_data *fdata);
 
 /* */
 int fill_file_rbuff(struct file_data *fdata, char *inbuff, size_t len);
-int file_fopen(struct *file_data, char *pathname, size_t pathlen,
-			  char *mode);
+int file_fopen(struct *file_data, char *pathname, size_t pathlen, char *mode);
 
 /* test functions */

@@ -15,6 +15,92 @@
 
 #define PASSED_NULL 134 /* 134 is one value above max errno */
 
+
+/************************************************
+ * Example of using open() fopen() and openat()
+ *
+ * reference: https://stackoverflow.com/questions/65174086/
+ *	      is-there-any-difference-between-filename-max-and-path-max-in-c
+ *
+ *	      REAL QUESTION: HOW DO I COMMENT THIS OUT PEDANTICALLY IN C89!?
+ *	      FUCK.
+ *
+ * #include <sys/types.h>
+ * #include <sys/stat.h>
+ * #include <fcntl.h>
+ * #include <errno.h>
+ * #include <limits.h>
+ * #include <stdio.h>
+ * #include <stdlib.h>
+ * #include <string.h>
+ * #include <unistd.h>
+ *
+ * #include "myfopen.h"
+ *
+ * FILE *my_fopen(const char *filename, const char *mode)
+ * {
+ *     if (strlen(filename) > PATH_MAX) {
+ *         char *work_name = strdup(filename);
+ *         if (!work_name) {
+ *             return NULL; /* cannot malloc */
+ *         }
+ *         char *to_free   = work_name;  /* to free at end */
+ *         int dir_fd      = -1;
+ *         while(strlen(work_name) >= PATH_MAX) {
+ *             char *p = work_name + PATH_MAX - 1;
+ *             while(*p != '/') p--;
+ *             /* p points to the previous '/' to the PATH_MAX limit */
+ *             *p++ = '\0';
+ *             if (dir_fd < 0) {
+ *                 dir_fd = open(work_name, 0);
+ *                 if (dir_fd < 0) {
+ *                     ERR("open: %s: %s\n", work_name,
+ *                             strerror(errno));
+ *                     free(to_free);
+ *                     return NULL;
+ *                 }
+ *             } else {
+ *                 int aux_fd = openat(dir_fd, work_name, 0);
+ *                 close(dir_fd);
+ *                 if (aux_fd < 0) {
+ *                     ERR("openat: %s: %s\n", work_name,
+ *                         strerror(errno));
+ *                     free(to_free);
+ *                     return NULL;
+ *                 }
+ *                 dir_fd = aux_fd;
+ *             }
+ *             work_name = p;
+ *         }
+ *         /* strlen(work_name) < PATH_MAX,
+ *          * work_name points to the last chunk and
+ *          * dir_fd is the directory to base the real fopen
+ *          */
+ *         int fd = openat(
+ *                 dir_fd,
+ *                 work_name,
+ *                 O_RDONLY); /* this needs to be
+ *                             * adjusted, based on what is
+ *                             * specified in string mode */
+ *         close(dir_fd);
+ *         if (fd < 0) {
+ *             fprintf(stderr, "openat: %s: %s\n",
+ *                     work_name, strerror(errno));
+ *             free(to_free);
+ *             return NULL;
+ *         }
+ *         free(to_free);
+ *         return fdopen(fd, mode);
+ *     }
+ *     return fopen(filename, mode);
+ * }
+ */
+
+
+
+
+
+
 /* file_open will allocate a file_data struct if one is not passed
  * if struct file_data pointer is NULL
  * - a newly allocated file_data struct is returned
@@ -24,7 +110,8 @@
  *
  */
 
-struct file_data* file_fopen(struct file_data *fdata, char *pathname, char *mode)
+struct file_data* file_fopen(struct file_data *fdata, char *pathname, /* #{{{ */
+			     char *mode)
 {
 	size_t len = 0;
 
@@ -62,9 +149,17 @@ struct file_data* file_fopen(struct file_data *fdata, char *pathname, char *mode
 	fdata->mode_len = len;
 
 	fdata->pathlen = pathlen;
-}
+} /* }}} */
 
-struct file_data* file_data_init(void)
+/*
+ * - Allocates with calloc the file_data struct
+ * - Allocates members of the file_data struct that get an initalized value
+ *   and size which is not handled in other functions for file operations.
+ *
+ * Members that get allocated and their initalization values:
+ *
+ */
+struct file_data* file_data_init(void) /* #{{{ */
 {
 	struct file_data *fdata;
 
@@ -78,7 +173,7 @@ struct file_data* file_data_init(void)
 	fdata->fd = NULL; /* file descriptor, r/w, open, fp -> fd */
 
 	/* file and path stuff */
-	fdata->pathname = CALLOC_ARRAY(;
+	fdata->pathname
 	fdata->pathlen = 0;
 	fdata->mode = 0;
 
@@ -102,15 +197,8 @@ struct file_data* file_data_init(void)
 	fdata->rw_size = 0;
 	fdata->rw_nmemb = 0;
 
-	/* fseek functionality */
-	fdata->offset = 0; /* offset of place inside the current file stream */
-	fdata->whence = 0; /* SEEK_SET, SEEK_CUR, SEEK_END */
-
-	/* fgetpos() and fsetpos() funcionality */
-	fdata->pos = 0;
-
 	return fdata;
-}
+} /* }}} */
 
 /*
  * Fills the struct file_data's rbuff and rbuff_len.
@@ -133,7 +221,7 @@ struct file_data* file_data_init(void)
  *
  *	If sucess: FIO_SUCCESS is returned
  */
-int fill_file_rbuff(struct file_data *fdata, char *inbuff, size_t len)
+int fill_file_rbuff(struct file_data *fdata, char *inbuff, size_t len) /* #{{{ */
 {
 	/* check if len is valid
 	 * TODO: If len is set negative when passed theres probably an issue
@@ -172,7 +260,7 @@ int fill_file_rbuff(struct file_data *fdata, char *inbuff, size_t len)
 		}
 
 		/*
-		 * Check if pointer is null or address is negatie, if the
+		 * Check if pointer is null or address is negative, if the
 		 * pointer is allocated properly then the adderess will not be
 		 * less than NULL. If it is something messed up setting the
 		 * address. If it is a negative address free wont do anything
@@ -185,7 +273,7 @@ int fill_file_rbuff(struct file_data *fdata, char *inbuff, size_t len)
 		 * address to NULL or make sure its handled if a negative
 		 * address is passed on purpose and print an error.
 		 */
-	} else if (_unlikely(!fdata->rbuff || fdata->rbuff < (char*)NULL)) {
+	} else if (_unlikely(fdata->rbuff < (char*)NULL)) {
 			/* rbuff is not not allocated, check rbuff */
 			fdata->rbuff = CALLOC_ARRAY(char, len);
 			if (errno) {
@@ -193,6 +281,12 @@ int fill_file_rbuff(struct file_data *fdata, char *inbuff, size_t len)
 				      stderr);
 				return errno;
 			}
+	} else {
+		/*
+		 * what rbuff address in a virtual address space is set for a
+		 * pointer on free might be negative after a free
+		 */
+		free(fdata->rbuff);
 	}
 
 	/*
@@ -223,7 +317,7 @@ int fill_file_rbuff(struct file_data *fdata, char *inbuff, size_t len)
 	strncpy(fdata->rbuff, inbuff, len);
 
 	return FIO_SUCCESS;
-}
+} /* }}} */
 
 /*
  * return values:
