@@ -16,13 +16,14 @@
 #define PASSED_NULL 134 /* 134 is one value above max errno */
 
 
+#ifndef COMMENT_OUT
 /************************************************
  * Example of using open() fopen() and openat()
  *
  * reference: https://stackoverflow.com/questions/65174086/
  *	      is-there-any-difference-between-filename-max-and-path-max-in-c
  *
- *	      REAL QUESTION: HOW DO I COMMENT THIS OUT PEDANTICALLY IN C89!?
+ * REAL QUESTIONs: HOW DO I COMMENT THIS OUT PEDANTICALLY IN C89!?
  *	      FUCK.
  *
  *	      CAT ITS YOUR NETWORK, VERSION AND START DATE OF GNUPG . , AND SEND
@@ -41,83 +42,76 @@
  *
  *	      GET FUCKED.
  */
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-#ifndef COMMENT_OUT
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <fcntl.h>
- #include <errno.h>
- #include <limits.h>
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
- #include <unistd.h>
+#include "myfopen.h"
 
- #include "myfopen.h"
-
- FILE *my_fopen(const char *filename, const char *mode)
- {
-     if (strlen(filename) > PATH_MAX) {
-         char *work_name = strdup(filename);
-         if (!work_name) {
-             return NULL; /* cannot malloc */
-         }
-         char *to_free   = work_name;  /* to free at end */
-         int dir_fd      = -1;
-         while(strlen(work_name) >= PATH_MAX) {
-             char *p = work_name + PATH_MAX - 1;
-             while(*p != '/') p--;
-             /* p points to the previous '/' to the PATH_MAX limit */
-             *p++ = '\0';
-             if (dir_fd < 0) {
-                 dir_fd = open(work_name, 0);
-                 if (dir_fd < 0) {
-                     ERR("open: %s: %s\n", work_name,
-                             strerror(errno));
-                     free(to_free);
-                     return NULL;
-                 }
-             } else {
-                 int aux_fd = openat(dir_fd, work_name, 0);
-                 close(dir_fd);
-                 if (aux_fd < 0) {
-                     ERR("openat: %s: %s\n", work_name,
-                         strerror(errno));
-                     free(to_free);
-                     return NULL;
-                 }
-                 dir_fd = aux_fd;
-             }
-             work_name = p;
-         }
-         /* strlen(work_name) < PATH_MAX,
-          * work_name points to the last chunk and
-          * dir_fd is the directory to base the real fopen
-          */
-         int fd = openat(
-                 dir_fd,
-                 work_name,
-                 O_RDONLY); /* this needs to be
-                             * adjusted, based on what is
-                             * specified in string mode */
-         close(dir_fd);
-         if (fd < 0) {
-             fprintf(stderr, "openat: %s: %s\n",
-                     work_name, strerror(errno));
-             free(to_free);
-             return NULL;
-         }
-         free(to_free);
-         return fdopen(fd, mode);
-     }
-     return fopen(filename, mode);
- }
+FILE *my_fopen(const char *filename, const char *mode)
+{
+    if (strlen(filename) > PATH_MAX) {
+        char *work_name = strdup(filename);
+        if (!work_name) {
+            return NULL; /* cannot malloc */
+        }
+        char *to_free   = work_name;  /* to free at end */
+        int dir_fd      = -1;
+        while(strlen(work_name) >= PATH_MAX) {
+            char *p = work_name + PATH_MAX - 1;
+            while(*p != '/') p--;
+            /* p points to the previous '/' to the PATH_MAX limit */
+            *p++ = '\0';
+            if (dir_fd < 0) {
+                dir_fd = open(work_name, 0);
+                if (dir_fd < 0) {
+                    ERR("open: %s: %s\n", work_name,
+                            strerror(errno));
+                    free(to_free);
+                    return NULL;
+                }
+            } else {
+                int aux_fd = openat(dir_fd, work_name, 0);
+                close(dir_fd);
+                if (aux_fd < 0) {
+                    ERR("openat: %s: %s\n", work_name,
+                        strerror(errno));
+                    free(to_free);
+                    return NULL;
+                }
+                dir_fd = aux_fd;
+            }
+            work_name = p;
+        }
+        /* strlen(work_name) < PATH_MAX,
+         * work_name points to the last chunk and
+         * dir_fd is the directory to base the real fopen
+         */
+        int fd = openat(
+                dir_fd,
+                work_name,
+                O_RDONLY); /* this needs to be
+                            * adjusted, based on what is
+                            * specified in string mode */
+        close(dir_fd);
+        if (fd < 0) {
+            fprintf(stderr, "openat: %s: %s\n",
+                    work_name, strerror(errno));
+            free(to_free);
+            return NULL;
+        }
+        free(to_free);
+        return fdopen(fd, mode);
+    }
+    return fopen(filename, mode);
+}
 #endif
-
-
-
-
-
 
 /* file_open will allocate a file_data struct if one is not passed
  * if struct file_data pointer is NULL
@@ -127,7 +121,6 @@
  * - the file_data pointer passed is returned
  *
  */
-
 struct file_data* file_fopen(struct file_data *fdata, char *pathname, /* #{{{ */
 			     char *mode)
 {
